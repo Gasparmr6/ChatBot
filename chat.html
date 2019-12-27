@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="stylesheet" href="estilo.css">
+        <script>
+
+            var anterior;
+            var cont = 0;
+            var bool_anterior = false;
+
+            respuestas = {
+                "hola" : "Buenas",
+                "adios" : "Hasta luego",
+                "¿como te llamas?" : "Puedes llamarme Atom",
+                "atom" : "Dime, ¿qué necesitas?",
+                "¿como estas?" : "Es complicado... Digamos que bien",
+                "ok" : ":)",
+                "estoy cansado" : "Espero que no estés al volante",
+                "¿tienes novio?" : "Yo las relaciones se las dejo a las bases de datos",
+                "¿que haces luego?" : "Estoy trabajando. Mi turno acaba en 8726323 años",
+                "soy tu padre" : "NOOOOOOOOOOOOOOOOOOOOO",  
+                "¿tienes television?" : "Sí, te muestro abajo una imagen",
+                "¿donde puedo relajarme?" : "Te muestro una imagen de un lugar perfecto",
+                "" : "No seas tímido"
+            };
+
+            function sinAcentos(texto) {
+                return texto.normalize('NFD').replace(/[\u0300-\u036f]/g,"");
+            } 
+
+            function hablar() {
+                var mostrar = document.getElementById("userBox").value;
+                var user = mostrar.toLowerCase();
+                user = sinAcentos(user);
+
+                document.getElementById("userBox").value = "";
+                document.getElementById("chat").innerHTML += "Tú: "+mostrar+"<br>";
+
+                if(cont > 0 && bool_anterior)  document.getElementById("imagenes").removeChild(anterior);
+
+                if (user in respuestas) {
+
+                    if(user == "¿tienes television?" || user == "¿donde puedo relajarme?"){
+                        var path="";
+                        if(user=="¿tienes television?") path= "https://c.pxhere.com/photos/a7/1e/recall_black_and_white_tv_old_appliances-771736.jpg!d"; 
+                        else if(user == "¿donde puedo relajarme?") path= "https://c.pxhere.com/images/66/2f/63f0749f94982aefd60a1d27ef50-1571329.jpg!d";
+                        var img=document.createElement('img'); 
+                        img.setAttribute("src",path);
+                        img.setAttribute("width","150");
+                        img.setAttribute("height","100px");
+                        document.getElementById("imagenes").appendChild(img);
+                        anterior=img;
+                        cont=cont+1;
+                        bool_anterior=true;
+                    }
+                    else {
+                        bool_anterior=false;
+                    }
+                    document.getElementById("chat").innerHTML += "Robot: "+respuestas[user]+"<br><br>";
+
+                } 
+                else {
+                    document.getElementById("chat").innerHTML += "Robot: No te entiendo...<br><br>";
+                    bool_anterior=false;
+                }
+            }
+            function borrar(){
+                if(cont > 0 && bool_anterior)  document.getElementById("imagenes").removeChild(anterior);
+                document.getElementById("chat").innerHTML = "";
+                bool_anterior=false;
+            }
+
+        </script>
+    </head>
+    <body>
+        <div class="mensajes">
+            <h1>CHATBOT</h1>
+            <p id="chat" ></p>
+            <input id="userBox" placeholder="Dime algo" type="text" onkeydown="if (event.keyCode == 13) {hablar()}"></input>
+            <button onclick="hablar()">Enviar</button>
+            <button onclick="borrar()">Vacia la conversación</button>
+        </div>
+
+        <div class="imagenes" id="imagenes"></div>
+    </body>
+</html>
